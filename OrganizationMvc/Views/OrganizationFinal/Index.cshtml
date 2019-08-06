@@ -1,0 +1,57 @@
+﻿@model IEnumerable<DataAccesLayer.Organization>
+
+@{
+    /**/
+
+    ViewBag.Title = "Index";
+}
+
+<center><h1 style="margin-bottom:30px;">All Organizations</h1></center>
+
+
+
+@{
+    foreach (var item in Model)
+    {
+
+<div class="col-md-4" style="margin-bottom:30px;">
+    <div>
+
+
+
+        <a style="margin-right:40px;" href="/OrganizationFinal/Detail/@item.Id">@item.Name</a>
+
+
+
+
+        <span style="float:right;margin-right:50px;">@item.OrganizationDate.Value.ToString("dd/MM/yyyy")</span>
+    </div>
+
+
+
+    <div><img width="300" height="300" style="margin-bottom:5px;margin-top:5px;" src="~/Images/@item.Images.imageUrl" /></div>
+
+
+
+    <div style="text-align:center;margin-right:35px;">
+        @item.Description
+        @if (Session["UserName"] != null)
+        {
+            <span><a href="/OrganizationFinal/DeleteOrg/@item.Id"><i style="float:right; margin-top:5px;margin-right:15px;" title="Delete Organization" class="glyphicon glyphicon-trash"></i></a></span>
+            <span><a href="/OrganizationFinal/UpdateOrg/@item.Id"><i style="float:left; margin-top:5px;" title="Update Organization" class="glyphicon glyphicon-edit"></i></a></span>
+        }
+
+        else
+        {
+
+            <span></span>
+        }
+    </div>
+</div>
+
+    }
+}
+
+
+
+

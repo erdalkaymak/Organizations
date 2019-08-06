@@ -1,0 +1,125 @@
+﻿@model DataAccesLayer.Organization
+
+<div>
+    <center style="margin-top:30px;margin-bottom:30px;"><h2>@Model.Name</h2></center>
+    <hr />
+    <div class="col-md-6">
+        <dl class="dl-horizontal">
+          
+            <dt style="margin-top:120px;">
+                <span>Main Image :</span>
+            </dt>
+            <dd>
+                <img style="margin-bottom:10px;margin-top:10px;" width="250" height="250" src="~/Images/@Model.Images.imageUrl" />
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Description):
+            </dt>
+
+            <dd style="margin-left:260px;">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+
+            <dt style="margin-top:10px;">
+                @Html.DisplayNameFor(model => model.OrganizationDate):
+            </dt>
+
+            <dd style="margin-top:10px;margin-left:240px;">
+                @Html.DisplayFor(model => model.OrganizationDate)
+            </dd>
+
+            <dd style="margin-top:60px;text-align:center;margin-right:120px;">
+                <b>Comments</b>
+            </dd>
+
+        </dl>
+    </div>
+
+
+    <div class="col-md-6">
+        @if (Session["UserName"] != null)
+        {
+
+            using (Html.BeginForm("AddMember", "OrganizationFinal", FormMethod.Post))
+            {
+                <input type="hidden" name="orgId" id="orgId" value="@Model.Id" />
+
+                <div class="form-group">
+                    @Html.Label("User:", htmlAttributes: new { @class = " col-md-6", style = "margin-left:124px;" })
+                    <div class="col-md-6" style="margin-left:180px;">
+                        @{ var UserList = (List<DataAccesLayer.User>)ViewData["All Users"]; }
+
+                        <select class="form-control" style="margin-top:-30px;" id="selectedUserId" name="selectedUserId">
+                            @foreach (var item in UserList)
+                            {
+                                <option id="@item.Id" value="@item.Id">@item.Id-) @item.UserName</option>
+                            }
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <div><input style="margin-left:300px;margin-top:10px;margin-bottom:20px;" class="btn btn-default" type="submit" value="Add Participant" /></div>
+                </div>
+            }
+        }
+
+    </div>
+    <div class="col-md-6" style="margin-bottom:40px;">
+        <div class=""><b style="margin-left:250px;font-size:large">Participants</b></div>
+       
+        <table  class="table col-md-6" style="width:100%;margin-top:10px;">
+            <tr>
+               <th>Id</th>
+                <th>Participant Name</th>
+                @if (Session["UserName"] != null)
+                {
+                    <th>Operations</th>
+                }
+                else
+                {
+                    <th></th>
+                }
+
+            </tr>
+            @foreach (var orguser in Model.OrgUser)
+            {
+            <tr>
+                <td>
+                    @orguser.Id
+                </td>
+
+                <td>
+                    @orguser.User.UserName
+                </td>
+                @if (Session["UserName"] != null)
+                {
+                    <td>
+                        <a href="/OrganizationFinal/DeleteUsers/@orguser.Id?orgId=@Model.Id"><i style="margin-left:20px;" title="Delete Participant" class="glyphicon glyphicon-trash"></i></a>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+
+            </tr>
+            }
+        </table>
+    </div>
+
+   <div id="commentPartial">
+       @Html.Action("PartialComment",new {orgId=Model.Id })
+   </div>
+      <script>
+          function PostComment() {
+              $.post("/OrganizationFinal/AddComment", $('#frm1').serialize(), function (data) {
+                  alert("Comment Added Succesfully");
+                  $('#commentPartial').load("/OrganizationFinal/PartialComment/?orgId=@Model.Id");                 
+              });
+          }
+      </script>
+    </div>
+
+   

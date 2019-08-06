@@ -4,7 +4,27 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="MyOrganizationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="MyOrganizationModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Comments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CommnetStr" Type="nvarchar" MaxLength="350" />
+          <Property Name="OrganizationId" Type="int" />
+          <Property Name="UserId" Type="int" />
+        </EntityType>
+        <EntityType Name="Exception">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ControllerName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ActionName" Type="nvarchar" MaxLength="50" />
+          <Property Name="StackTrace" Type="nvarchar(max)" />
+          <Property Name="LogTime" Type="datetime" />
+          <Property Name="Message" Type="nvarchar" MaxLength="150" />
+        </EntityType>
         <EntityType Name="Images">
           <Key>
             <PropertyRef Name="Id" />
@@ -23,17 +43,13 @@
           <Property Name="MainImageId" Type="int" />
           <Property Name="Organizer" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="OrgImage">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="OrgId" />
-            <PropertyRef Name="ImageId" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
-          <Property Name="OrgId" Type="int" Nullable="false" />
-          <Property Name="ImageId" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrgId" Type="int" />
+          <Property Name="ImageId" Type="int" />
         </EntityType>
         <EntityType Name="OrgUser">
           <Key>
@@ -52,6 +68,42 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
           <Property Name="Password" Type="nvarchar" MaxLength="100" />
           <Property Name="UserType" Type="int" />
         </EntityType>
+        <Association Name="FK_Comments_Organization">
+          <End Role="Organization" Type="Self.Organization" Multiplicity="0..1" />
+          <End Role="Comments" Type="Self.Comments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Comments">
+              <PropertyRef Name="OrganizationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Comments_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Comments" Type="Self.Comments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Comments">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Organization_Images">
+          <End Role="Images" Type="Self.Images" Multiplicity="0..1" />
+          <End Role="Organization" Type="Self.Organization" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Images">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Organization">
+              <PropertyRef Name="MainImageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Organization_User">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Organization" Type="Self.Organization" Multiplicity="*" />
@@ -65,7 +117,7 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OrgImage_Images">
-          <End Role="Images" Type="Self.Images" Multiplicity="1" />
+          <End Role="Images" Type="Self.Images" Multiplicity="0..1" />
           <End Role="OrgImage" Type="Self.OrgImage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Images">
@@ -77,7 +129,7 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OrgImage_Organization">
-          <End Role="Organization" Type="Self.Organization" Multiplicity="1" />
+          <End Role="Organization" Type="Self.Organization" Multiplicity="0..1" />
           <End Role="OrgImage" Type="Self.OrgImage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Organization">
@@ -113,17 +165,25 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="MyOrganizationModelStoreContainer">
+          <EntitySet Name="Comments" EntityType="Self.Comments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Exception" EntityType="Self.Exception" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Images" EntityType="Self.Images" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Organization" EntityType="Self.Organization" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrgImage" EntityType="Self.OrgImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrgUser" EntityType="Self.OrgUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OrgImage" EntityType="Self.OrgImage" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [OrgImage].[Id] AS [Id], 
-    [OrgImage].[OrgId] AS [OrgId], 
-    [OrgImage].[ImageId] AS [ImageId]
-    FROM [dbo].[OrgImage] AS [OrgImage]</DefiningQuery>
-          </EntitySet>
+          <AssociationSet Name="FK_Comments_Organization" Association="Self.FK_Comments_Organization">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="Comments" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Comments_User" Association="Self.FK_Comments_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Comments" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Organization_Images" Association="Self.FK_Organization_Images">
+            <End Role="Images" EntitySet="Images" />
+            <End Role="Organization" EntitySet="Organization" />
+          </AssociationSet>
           <AssociationSet Name="FK_Organization_User" Association="Self.FK_Organization_User">
             <End Role="User" EntitySet="User" />
             <End Role="Organization" EntitySet="Organization" />
@@ -145,18 +205,81 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
             <End Role="OrgUser" EntitySet="OrgUser" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MyOrganizationModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="MyOrganizationEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Comments" EntityType="MyOrganizationModel.Comments" />
+          <EntitySet Name="Exception" EntityType="MyOrganizationModel.Exception" />
+          <EntitySet Name="Images" EntityType="MyOrganizationModel.Images" />
+          <EntitySet Name="Organization" EntityType="MyOrganizationModel.Organization" />
+          <EntitySet Name="OrgImage" EntityType="MyOrganizationModel.OrgImage" />
+          <EntitySet Name="OrgUser" EntityType="MyOrganizationModel.OrgUser" />
+          <EntitySet Name="User" EntityType="MyOrganizationModel.User" />
+          <AssociationSet Name="FK_Comments_Organization" Association="MyOrganizationModel.FK_Comments_Organization">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="Comments" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Comments_User" Association="MyOrganizationModel.FK_Comments_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Comments" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Organization_Images" Association="MyOrganizationModel.FK_Organization_Images">
+            <End Role="Images" EntitySet="Images" />
+            <End Role="Organization" EntitySet="Organization" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrgImage_Images" Association="MyOrganizationModel.FK_OrgImage_Images">
+            <End Role="Images" EntitySet="Images" />
+            <End Role="OrgImage" EntitySet="OrgImage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Organization_User" Association="MyOrganizationModel.FK_Organization_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Organization" EntitySet="Organization" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrgImage_Organization" Association="MyOrganizationModel.FK_OrgImage_Organization">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="OrgImage" EntitySet="OrgImage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrgUser_OrgUser" Association="MyOrganizationModel.FK_OrgUser_OrgUser">
+            <End Role="Organization" EntitySet="Organization" />
+            <End Role="OrgUser" EntitySet="OrgUser" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrgUser_User" Association="MyOrganizationModel.FK_OrgUser_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="OrgUser" EntitySet="OrgUser" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Comments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CommnetStr" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="OrganizationId" Type="Int32" />
+          <Property Name="UserId" Type="Int32" />
+          <NavigationProperty Name="Organization" Relationship="MyOrganizationModel.FK_Comments_Organization" FromRole="Comments" ToRole="Organization" />
+          <NavigationProperty Name="User" Relationship="MyOrganizationModel.FK_Comments_User" FromRole="Comments" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Exception">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ControllerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ActionName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StackTrace" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LogTime" Type="DateTime" Precision="3" />
+          <Property Name="Message" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="Images">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="imageUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="OrgImage" Relationship="Self.FK_OrgImage_Images" FromRole="Images" ToRole="OrgImage" />
+          <Property Name="imageUrl" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Organization" Relationship="MyOrganizationModel.FK_Organization_Images" FromRole="Images" ToRole="Organization" />
+          <NavigationProperty Name="OrgImage" Relationship="MyOrganizationModel.FK_OrgImage_Images" FromRole="Images" ToRole="OrgImage" />
         </EntityType>
         <EntityType Name="Organization">
           <Key>
@@ -168,9 +291,21 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
           <Property Name="OrganizationDate" Type="DateTime" Precision="3" />
           <Property Name="MainImageId" Type="Int32" />
           <Property Name="Organizer" Type="Int32" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Organization_User" FromRole="Organization" ToRole="User" />
-          <NavigationProperty Name="OrgImage" Relationship="Self.FK_OrgImage_Organization" FromRole="Organization" ToRole="OrgImage" />
-          <NavigationProperty Name="OrgUser" Relationship="Self.FK_OrgUser_OrgUser" FromRole="Organization" ToRole="OrgUser" />
+          <NavigationProperty Name="Comments" Relationship="MyOrganizationModel.FK_Comments_Organization" FromRole="Organization" ToRole="Comments" />
+          <NavigationProperty Name="Images" Relationship="MyOrganizationModel.FK_Organization_Images" FromRole="Organization" ToRole="Images" />
+          <NavigationProperty Name="User" Relationship="MyOrganizationModel.FK_Organization_User" FromRole="Organization" ToRole="User" />
+          <NavigationProperty Name="OrgImage" Relationship="MyOrganizationModel.FK_OrgImage_Organization" FromRole="Organization" ToRole="OrgImage" />
+          <NavigationProperty Name="OrgUser" Relationship="MyOrganizationModel.FK_OrgUser_OrgUser" FromRole="Organization" ToRole="OrgUser" />
+        </EntityType>
+        <EntityType Name="OrgImage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrgId" Type="Int32" />
+          <Property Name="ImageId" Type="Int32" />
+          <NavigationProperty Name="Images" Relationship="MyOrganizationModel.FK_OrgImage_Images" FromRole="OrgImage" ToRole="Images" />
+          <NavigationProperty Name="Organization" Relationship="MyOrganizationModel.FK_OrgImage_Organization" FromRole="OrgImage" ToRole="Organization" />
         </EntityType>
         <EntityType Name="OrgUser">
           <Key>
@@ -179,8 +314,8 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="OrgId" Type="Int32" Nullable="false" />
           <Property Name="UserId" Type="Int32" />
-          <NavigationProperty Name="Organization" Relationship="Self.FK_OrgUser_OrgUser" FromRole="OrgUser" ToRole="Organization" />
-          <NavigationProperty Name="User" Relationship="Self.FK_OrgUser_User" FromRole="OrgUser" ToRole="User" />
+          <NavigationProperty Name="Organization" Relationship="MyOrganizationModel.FK_OrgUser_OrgUser" FromRole="OrgUser" ToRole="Organization" />
+          <NavigationProperty Name="User" Relationship="MyOrganizationModel.FK_OrgUser_User" FromRole="OrgUser" ToRole="User" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -190,24 +325,49 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
           <Property Name="UserName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="UserType" Type="Int32" />
-          <NavigationProperty Name="Organization" Relationship="Self.FK_Organization_User" FromRole="User" ToRole="Organization" />
-          <NavigationProperty Name="OrgUser" Relationship="Self.FK_OrgUser_User" FromRole="User" ToRole="OrgUser" />
+          <NavigationProperty Name="Comments" Relationship="MyOrganizationModel.FK_Comments_User" FromRole="User" ToRole="Comments" />
+          <NavigationProperty Name="Organization" Relationship="MyOrganizationModel.FK_Organization_User" FromRole="User" ToRole="Organization" />
+          <NavigationProperty Name="OrgUser" Relationship="MyOrganizationModel.FK_OrgUser_User" FromRole="User" ToRole="OrgUser" />
         </EntityType>
-        <EntityType Name="OrgImage">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="OrgId" />
-            <PropertyRef Name="ImageId" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="OrgId" Type="Int32" Nullable="false" />
-          <Property Name="ImageId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Images" Relationship="Self.FK_OrgImage_Images" FromRole="OrgImage" ToRole="Images" />
-          <NavigationProperty Name="Organization" Relationship="Self.FK_OrgImage_Organization" FromRole="OrgImage" ToRole="Organization" />
-        </EntityType>
+        <Association Name="FK_Comments_Organization">
+          <End Type="MyOrganizationModel.Organization" Role="Organization" Multiplicity="0..1" />
+          <End Type="MyOrganizationModel.Comments" Role="Comments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Comments">
+              <PropertyRef Name="OrganizationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Comments_User">
+          <End Type="MyOrganizationModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="MyOrganizationModel.Comments" Role="Comments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Comments">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Organization_Images">
+          <End Type="MyOrganizationModel.Images" Role="Images" Multiplicity="0..1" />
+          <End Type="MyOrganizationModel.Organization" Role="Organization" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Images">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Organization">
+              <PropertyRef Name="MainImageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_OrgImage_Images">
-          <End Role="Images" Type="Self.Images" Multiplicity="1" />
-          <End Role="OrgImage" Type="Self.OrgImage" Multiplicity="*" />
+          <End Type="MyOrganizationModel.Images" Role="Images" Multiplicity="0..1" />
+          <End Type="MyOrganizationModel.OrgImage" Role="OrgImage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Images">
               <PropertyRef Name="Id" />
@@ -218,8 +378,8 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Organization_User">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
-          <End Role="Organization" Type="Self.Organization" Multiplicity="*" />
+          <End Type="MyOrganizationModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="MyOrganizationModel.Organization" Role="Organization" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
@@ -230,8 +390,8 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OrgImage_Organization">
-          <End Role="Organization" Type="Self.Organization" Multiplicity="1" />
-          <End Role="OrgImage" Type="Self.OrgImage" Multiplicity="*" />
+          <End Type="MyOrganizationModel.Organization" Role="Organization" Multiplicity="0..1" />
+          <End Type="MyOrganizationModel.OrgImage" Role="OrgImage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Organization">
               <PropertyRef Name="Id" />
@@ -242,8 +402,8 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OrgUser_OrgUser">
-          <End Role="Organization" Type="Self.Organization" Multiplicity="1" />
-          <End Role="OrgUser" Type="Self.OrgUser" Multiplicity="*" />
+          <End Type="MyOrganizationModel.Organization" Role="Organization" Multiplicity="1" />
+          <End Type="MyOrganizationModel.OrgUser" Role="OrgUser" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Organization">
               <PropertyRef Name="Id" />
@@ -254,8 +414,8 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OrgUser_User">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
-          <End Role="OrgUser" Type="Self.OrgUser" Multiplicity="*" />
+          <End Type="MyOrganizationModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="MyOrganizationModel.OrgUser" Role="OrgUser" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
@@ -265,84 +425,79 @@ warning 6002: The table/view 'MyOrganization.dbo.OrgImage' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="MyOrganizationEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Images" EntityType="Self.Images" />
-          <EntitySet Name="Organization" EntityType="Self.Organization" />
-          <EntitySet Name="OrgUser" EntityType="Self.OrgUser" />
-          <EntitySet Name="User" EntityType="Self.User" />
-          <EntitySet Name="OrgImage" EntityType="Self.OrgImage" />
-          <AssociationSet Name="FK_OrgImage_Images" Association="Self.FK_OrgImage_Images">
-            <End Role="Images" EntitySet="Images" />
-            <End Role="OrgImage" EntitySet="OrgImage" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Organization_User" Association="Self.FK_Organization_User">
-            <End Role="User" EntitySet="User" />
-            <End Role="Organization" EntitySet="Organization" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OrgImage_Organization" Association="Self.FK_OrgImage_Organization">
-            <End Role="Organization" EntitySet="Organization" />
-            <End Role="OrgImage" EntitySet="OrgImage" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OrgUser_OrgUser" Association="Self.FK_OrgUser_OrgUser">
-            <End Role="Organization" EntitySet="Organization" />
-            <End Role="OrgUser" EntitySet="OrgUser" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OrgUser_User" Association="Self.FK_OrgUser_User">
-            <End Role="User" EntitySet="User" />
-            <End Role="OrgUser" EntitySet="OrgUser" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="MyOrganizationModelStoreContainer" CdmEntityContainer="MyOrganizationEntities">
+          <EntitySetMapping Name="Comments">
+            <EntityTypeMapping TypeName="MyOrganizationModel.Comments">
+              <MappingFragment StoreEntitySet="Comments">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="OrganizationId" ColumnName="OrganizationId" />
+                <ScalarProperty Name="CommnetStr" ColumnName="CommnetStr" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Exception">
+            <EntityTypeMapping TypeName="MyOrganizationModel.Exception">
+              <MappingFragment StoreEntitySet="Exception">
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="LogTime" ColumnName="LogTime" />
+                <ScalarProperty Name="StackTrace" ColumnName="StackTrace" />
+                <ScalarProperty Name="ActionName" ColumnName="ActionName" />
+                <ScalarProperty Name="ControllerName" ColumnName="ControllerName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Images">
             <EntityTypeMapping TypeName="MyOrganizationModel.Images">
               <MappingFragment StoreEntitySet="Images">
-                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="imageUrl" ColumnName="imageUrl" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Organization">
             <EntityTypeMapping TypeName="MyOrganizationModel.Organization">
               <MappingFragment StoreEntitySet="Organization">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="OrganizationDate" ColumnName="OrganizationDate" />
-                <ScalarProperty Name="MainImageId" ColumnName="MainImageId" />
                 <ScalarProperty Name="Organizer" ColumnName="Organizer" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="OrgUser">
-            <EntityTypeMapping TypeName="MyOrganizationModel.OrgUser">
-              <MappingFragment StoreEntitySet="OrgUser">
+                <ScalarProperty Name="MainImageId" ColumnName="MainImageId" />
+                <ScalarProperty Name="OrganizationDate" ColumnName="OrganizationDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="OrgId" ColumnName="OrgId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="User">
-            <EntityTypeMapping TypeName="MyOrganizationModel.User">
-              <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="UserType" ColumnName="UserType" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OrgImage">
             <EntityTypeMapping TypeName="MyOrganizationModel.OrgImage">
               <MappingFragment StoreEntitySet="OrgImage">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="OrgId" ColumnName="OrgId" />
                 <ScalarProperty Name="ImageId" ColumnName="ImageId" />
+                <ScalarProperty Name="OrgId" ColumnName="OrgId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrgUser">
+            <EntityTypeMapping TypeName="MyOrganizationModel.OrgUser">
+              <MappingFragment StoreEntitySet="OrgUser">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="OrgId" ColumnName="OrgId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User">
+            <EntityTypeMapping TypeName="MyOrganizationModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="UserType" ColumnName="UserType" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -11,23 +11,33 @@ namespace DataAccesLayer
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Organization
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Organization()
         {
+            this.Comments = new HashSet<Comments>();
             this.OrgImage = new HashSet<OrgImage>();
             this.OrgUser = new HashSet<OrgUser>();
         }
     
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
+        [MaxLength(45)]
         public string Description { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
         public Nullable<System.DateTime> OrganizationDate { get; set; }
-        public Nullable<int> MainImageId { get; set; }
-        public Nullable<int> Organizer { get; set; }
+        public int MainImageId { get; set; }
+        public Nullable <int> Organizer { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Comments> Comments { get; set; }
+        public virtual Images Images { get; set; }
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrgImage> OrgImage { get; set; }

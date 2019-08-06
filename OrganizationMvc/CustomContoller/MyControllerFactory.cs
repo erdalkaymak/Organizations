@@ -1,28 +1,54 @@
-﻿using DataAccesLayer.Repositorys;
+﻿using DataAccesLayer;
+using DataAccesLayer.Repositorys;
 using OrganizationMvc.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace OrganizationMvc.CustomContoller
 {
-    public class MyControllerFactory: DefaultControllerFactory
+    public class MyControllerFactory : DefaultControllerFactory
     {
-        static  UserRepository userRep;
+        static ImageRepository repImage;
+        static OrganizationRepository repOrg;
+        static OrgUserRepository repOrgUser;
+        static OrgImageRepository repOrgImage;
+        static IUserRepository userRep;
+        static MyOrganizationEntities db;
+        static CommentRepository repComment;
         public override IController CreateController(RequestContext requestContext, string controllerName)
         {
-            if (userRep == null)
+            if (db == null)
             {
-                userRep = new UserRepository();
+                db = new MyOrganizationEntities();
             }
+            if (userRep == null)
+                userRep = new UserRepository(db);
+            if (repImage == null)
+                repImage = new ImageRepository(db);
+            if (repOrg == null)
+                repOrg = new OrganizationRepository(db);
+            if (repOrgUser == null)
+                repOrgUser = new OrgUserRepository(db);
+            if (repOrgImage == null)
+                repOrgImage = new OrgImageRepository(db);
+            if (repComment == null)
+                repComment = new CommentRepository(db);
+
+
             if (controllerName == "Home")
             {
-                return new HomeController(userRep);
+                IController cnt1 = new HomeController(userRep);
+                return cnt1;
             }
+
+            if (controllerName == "OrganizationFinal")
+            {
+                IController cnt1 = new OrganizationFinalController(userRep, repImage, repOrg, repOrgUser, repOrgImage, repComment);
+                return cnt1;
+            }
+
             return base.CreateController(requestContext, controllerName);
+
         }
     }
 }

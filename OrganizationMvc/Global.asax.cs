@@ -1,4 +1,5 @@
-﻿using OrganizationMvc.CustomContoller;
+﻿
+using OrganizationMvc.CustomContoller;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace OrganizationMvc
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            ControllerBuilder.Current.SetControllerFactory(typeof(MyControllerFactory));
+            ControllerBuilder.Current.SetControllerFactory(new MyControllerFactory());
         }
     }
 }

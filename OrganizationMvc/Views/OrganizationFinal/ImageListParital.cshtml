@@ -1,0 +1,14 @@
+﻿@model List<DataAccesLayer.OrgImage>
+@{
+    Layout = null;
+}
+
+@{
+    foreach (var item in Model)
+    {
+        <div class="form-group">
+            <span><img width="50" height="50" src="~/Images/@item.Images.imageUrl"  /></span>
+        </div>
+        }
+}
+

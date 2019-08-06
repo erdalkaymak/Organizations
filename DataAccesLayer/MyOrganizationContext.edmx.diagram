@@ -5,16 +5,21 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="7afb8f96c0f04eee8f284c73fea0ed42" Name="Diagram1">
-        <EntityTypeShape EntityType="MyOrganizationModel.Images" Width="1.5" PointX="3" PointY="7.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MyOrganizationModel.Organization" Width="1.5" PointX="3" PointY="3.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="MyOrganizationModel.OrgUser" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MyOrganizationModel.User" Width="1.5" PointX="0.75" PointY="3.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="MyOrganizationModel.OrgImage" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
-        <AssociationConnector Association="MyOrganizationModel.FK_OrgImage_Images" ManuallyRouted="false" />
-        <AssociationConnector Association="MyOrganizationModel.FK_Organization_User" ManuallyRouted="false" />
-        <AssociationConnector Association="MyOrganizationModel.FK_OrgImage_Organization" ManuallyRouted="false" />
-        <AssociationConnector Association="MyOrganizationModel.FK_OrgUser_OrgUser" ManuallyRouted="false" />
-        <AssociationConnector Association="MyOrganizationModel.FK_OrgUser_User" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MyOrganizationModel.Comments" Width="1.5" PointX="3" PointY="3.875" />
+        <EntityTypeShape EntityType="MyOrganizationModel.Exception" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="MyOrganizationModel.Images" Width="1.5" PointX="3.75" PointY="1.125" />
+        <EntityTypeShape EntityType="MyOrganizationModel.Organization" Width="1.5" PointX="6" PointY="3.5" />
+        <EntityTypeShape EntityType="MyOrganizationModel.OrgImage" Width="1.5" PointX="8.25" PointY="1" />
+        <EntityTypeShape EntityType="MyOrganizationModel.OrgUser" Width="1.5" PointX="8.25" PointY="4" />
+        <EntityTypeShape EntityType="MyOrganizationModel.User" Width="1.5" PointX="0.75" PointY="3.875" />
+        <AssociationConnector Association="MyOrganizationModel.FK_Comments_Organization" />
+        <AssociationConnector Association="MyOrganizationModel.FK_Comments_User" />
+        <AssociationConnector Association="MyOrganizationModel.FK_Organization_Images" />
+        <AssociationConnector Association="MyOrganizationModel.FK_OrgImage_Images" />
+        <AssociationConnector Association="MyOrganizationModel.FK_Organization_User" />
+        <AssociationConnector Association="MyOrganizationModel.FK_OrgImage_Organization" />
+        <AssociationConnector Association="MyOrganizationModel.FK_OrgUser_OrgUser" />
+        <AssociationConnector Association="MyOrganizationModel.FK_OrgUser_User" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

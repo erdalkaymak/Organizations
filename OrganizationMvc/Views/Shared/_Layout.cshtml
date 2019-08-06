@@ -23,16 +23,35 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    @if (Session["UserName"] != null)
+                    {
+                        <li>@Html.ActionLink("New Organization", "AddOrganization", "OrganizationFinal")</li>
+                    }
+
                 </ul>
+                @if (Session["UserName"] == null)
+                {
+                    <b style="color:white">@Html.ActionLink("Login", "Login", "Home", null, new { style = "color:white;float:right;margin-top:12px;" })</b>
+                }
+                else
+                {
+
+                    <b style="color:white">@Html.ActionLink("Logout", "Logout", "Home", null, new { style = "color:white;float:right;margin-top:12px;" })</b>
+                    <b style="color:coral;float:right;margin-right:-100px;margin-top:12px;">@Session["UserName"]</b>
+                }
+
             </div>
         </div>
     </div>
     <div class="container body-content">
         @RenderBody()
         <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
+        @*<center>
+            <footer style="position:center;bottom:0">
+                <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            </footer>
+        </center>*@
+        
     </div>
 
     @Scripts.Render("~/bundles/jquery")

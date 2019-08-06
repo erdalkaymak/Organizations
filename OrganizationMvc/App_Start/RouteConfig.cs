@@ -13,6 +13,12 @@ namespace OrganizationMvc
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+         //   routes.MapRoute(
+         //    name: "AddImage",
+         //    url: "OrganizationFinal/{id}",
+         //    defaults: new { controller = "OrganizationFinal", action = "AddImage", id = UrlParameter.Optional }
+         //);
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

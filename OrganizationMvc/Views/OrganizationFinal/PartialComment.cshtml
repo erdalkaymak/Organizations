@@ -1,0 +1,46 @@
+﻿@model IEnumerable<DataAccesLayer.Comments>
+
+@{
+
+    Layout = null;
+}
+
+<div>
+    @using (Html.BeginForm("AddComment","OrganizationFinal",FormMethod.Post, new {id="frm1"}))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" id="id" value="@ViewBag.org" />
+        <div>
+           
+            <div class="form-group">
+                
+                <div>
+
+                    <textarea style="max-width:650px;" id="CommentStr" name="CommentStr" rows="5" cols="200"></textarea>
+
+                </div>
+
+                <span class="form-group">
+                    <span>
+                        <input style="margin-left:535px;" type="button" onclick="PostComment()" value="Add Comment" class="btn btn-default" />
+                    </span>
+                </span>
+            </div>
+
+
+        </div>
+    }
+
+    @{
+        foreach (var item in Model)
+        {
+            <div class=" col-md-7" style="border-bottom:1px solid gray;">
+                <div  style="margin-top:10px;margin-top:30px;font-size:17px;width:550px;word-wrap:break-word;text-align:left">@item.CommnetStr</div>
+                <div  style="margin-top:5px;font-size:15px;color:gray;text-align:right; ">@item.User.UserName</div>
+            </div>
+        }
+    }
+
+
+
+</div>

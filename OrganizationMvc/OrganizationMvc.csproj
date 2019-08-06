@@ -127,14 +127,19 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OrganizationFinalController.cs" />
     <Compile Include="CustomActionFilter\CheckLoginAttribute.cs" />
     <Compile Include="CustomContoller\MyControllerFactory.cs" />
+    <Compile Include="CustomExceptionFilter\LogExceptionFilter.cs" />
     <Compile Include="CustomValidations\SameUserAttribute.cs" />
     <Compile Include="CustomValidations\StrongPasswordAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ImageModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\OrganizationModel.cs" />
+    <Compile Include="Models\OrgImageModel.cs" />
     <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -169,16 +174,24 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Home\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Home\Register.cshtml" />
+    <Content Include="Views\OrganizationFinal\Index.cshtml" />
+    <Content Include="Views\OrganizationFinal\AddOrganization.cshtml" />
+    <Content Include="Views\OrganizationFinal\ImageListParital.cshtml" />
+    <Content Include="Views\OrganizationFinal\Detail.cshtml" />
+    <Content Include="Views\OrganizationFinal\UpdateOrg.cshtml" />
+    <Content Include="Views\OrganizationFinal\AddImage.cshtml" />
+    <Content Include="Views\OrganizationFinal\PartialComment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

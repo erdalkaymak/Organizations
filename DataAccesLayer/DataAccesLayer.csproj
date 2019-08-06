@@ -50,6 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comments.cs">
+      <DependentUpon>MyOrganizationContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Exception.cs">
+      <DependentUpon>MyOrganizationContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="Images.cs">
       <DependentUpon>MyOrganizationContext.tt</DependentUpon>
     </Compile>
@@ -81,6 +87,12 @@
     <Compile Include="Repositorys\BaseGenericRepository.cs" />
     <Compile Include="IBaseRepository\IBaseInterface.cs" />
     <Compile Include="IBaseRepository\IUserRepository.cs" />
+    <Compile Include="Repositorys\CommentRepository.cs" />
+    <Compile Include="Repositorys\ExceptionRepository.cs" />
+    <Compile Include="Repositorys\ImageRepository.cs" />
+    <Compile Include="Repositorys\OrganizationRepository.cs" />
+    <Compile Include="Repositorys\OrgImageRepository.cs" />
+    <Compile Include="Repositorys\OrgUserRepository.cs" />
     <Compile Include="Repositorys\UserRepository.cs" />
     <Compile Include="User.cs">
       <DependentUpon>MyOrganizationContext.tt</DependentUpon>

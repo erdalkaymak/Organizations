@@ -1,4 +1,5 @@
-﻿using DataAccesLayer.Repositorys;
+﻿using DataAccesLayer;
+using DataAccesLayer.Repositorys;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +13,8 @@ namespace OrganizationMvc.CustomValidations
         public override bool IsValid(object value)
         {
             string val = value.ToString();
-            UserRepository rep = new UserRepository();
+            MyOrganizationEntities db = new MyOrganizationEntities();
+            UserRepository rep = new UserRepository(db);
             if (rep.Filter(val))
             {
                 ErrorMessage = "Same username founded change username for registering";

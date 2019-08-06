@@ -10,5 +10,7 @@ namespace DataAccesLayer.Repositorys
     {
         bool Filter(string u, string p);
         bool Filter(string u);
+        User FilerWithUser(string u, string p);
+        
     }
 }

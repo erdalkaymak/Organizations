@@ -25,10 +25,12 @@ namespace DataAccesLayer
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Comments> Comments { get; set; }
+        public virtual DbSet<Exception> Exception { get; set; }
         public virtual DbSet<Images> Images { get; set; }
         public virtual DbSet<Organization> Organization { get; set; }
+        public virtual DbSet<OrgImage> OrgImage { get; set; }
         public virtual DbSet<OrgUser> OrgUser { get; set; }
         public virtual DbSet<User> User { get; set; }
-        public virtual DbSet<OrgImage> OrgImage { get; set; }
     }
 }

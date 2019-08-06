@@ -1,45 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccesLayer.Repositorys
 {
-    public class BaseGenericRepository<T> : IBaseInterface<T> where T : class
+    public abstract class BaseGenericRepository<T> : IBaseInterface<T> where T : class
     {
-        public MyOrganizationEntities db;
-        public BaseGenericRepository()
+        protected MyOrganizationEntities _db;
+        public BaseGenericRepository(MyOrganizationEntities db)
         {
-         db = new MyOrganizationEntities();
-        }
+            _db = db;
+        } 
 
         public void Delete(T entity)
         {
-            db.Set<T>().Remove(entity);
-            db.SaveChanges();
+            _db.Set<T>().Remove(entity);
+            _db.SaveChanges();
         }
 
         public T Find(int id)
         {
-            return db.Set<T>().Find(id);
+            return _db.Set<T>().Find(id);
         }
 
         public List<T> GetAll()
         {
-            return db.Set<T>().ToList();
+            return _db.Set<T>().ToList();
         }
 
         public void Insert(T entity)
         {
-            db.Set<T>().Add(entity);
-            db.SaveChanges();
+            _db.Set<T>().Add(entity);
+            _db.SaveChanges();
         }
 
         public void Update(T entity)
         {
-            db.Entry(entity).State = System.Data.Entity.EntityState.Modified;
-            db.SaveChanges();
+            _db.Set<T>().AddOrUpdate(entity);
+            _db.SaveChanges();
         }
     }
 }
